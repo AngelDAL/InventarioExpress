@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Inventario</title>
+    <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="node_modules/@fortawesome/fontawesome-free/css/all.min.css">
+    <link rel="stylesheet" href="node_modules/datatables.net-bs5/css/dataTables.bootstrap5.css">
+    <link rel="stylesheet" href="styles/styles.css">
+</head>
+
+<body>
+    <div id="Alerta" class="notification hide"> Esto es una alerta</div>
+    <div class="container">
+
+        <div id="MainFrame">
+
+            <div id="Inventario" class="Frame">
+                <h1 class="text-center"> <i class="fa-solid fa-boxes-stacked"></i> Inventario</h1>
+                <input type="text" id="lector" class="form-control text-center"
+                    placeholder=" Escanee un código de barras " autofocus>
+                <div id="resultado"></div>
+
+                <div id="TableContainer">
+
+                </div>
+            </div>
+
+            <div id="ProductRender" class="Frame container card" style="display: none;">
+                <div class="row">
+                    <div class="col-md-12 mt-2">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h2 class="text-center" id="ProductName">Item</h2>
+                            <button class="btn btn-danger" id="BackToInit"> <i class="fa fa-times" aria-hidden="true"></i> </button>
+                        </div>
+                    </div>
+                    <div class="col-md-12 mt-2">
+                        <hr>
+                    </div>
+                    <div class="col-md-6 mt-2">
+                        <div class="d-flex justify-content-center flex-wrap flex-row align-items-center gap-4">
+                            <div class="form-group text-center">
+                                <label for="ProductCode">Código de barras</label>
+                                <input type="text" id="ProductCode" class="form-control text-center" readonly>
+                            </div>
+                            <div class="form-group text-center">
+                                <label for="TXTPName">Nombre del producto</label>
+                                <textarea type="text" rows="4" cols="30" id="TXTPName" class="form-control text-center"
+                                    readonly></textarea>
+
+                            </div>
+                            <div class="form-group text-center">
+                                <label for="TXTPDate">Ultima modificacion</label>
+                                <input type="text" id="TXTPDate" class="form-control text-center" readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mt-2">
+                        <div id="NoImage" style="display: none;">
+                            <div class="NoProductImage">
+                                <h1 class="text-center"> <i class="fa-solid fa-box fa-bounce"></i> </h1>
+                                <p class="text-center">Agrega una imagen a este producto</p>
+                            </div>
+                        </div>
+                        <div id="PIPreview" class="ProductImage">
+                            <img class="ImageProduct" id="ImagePreviewProduct"
+                                src="https://m.media-amazon.com/images/I/71M-896ln9L.jpg" alt="ProductImagen">
+                        </div>
+                    </div>
+
+                    <div class="col-md-12 mt-2">
+                        <h4 class="text-center"> Cantidad</h4>
+                        <div class="d-flex justify-content-around align-items-center">
+                            <button class="btn btn-outline-secondary btn-lg" id="BTNRest"> <i class="fa fa-minus"
+                                    aria-hidden="true"></i> </button>
+                            <h4 class="text-center display-2" id="LBLCantidad"> 10 </h4>
+                            <button class="btn btn-outline-secondary btn-lg" id="BTNAdd"><i class="fa fa-plus"
+                                    aria-hidden="true"></i></button>
+
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+            <div id="RegisterProduct" class="Frame">
+                <div id="Divregistro" class="registro container card" style="display: none;">
+                    <!-- Registro de producto, requiere nombre, cantidad y especificar imagen(opcional) -->
+                    <div style="display: flex; justify-content:space-between; align-items: center;">
+                        <h2 class="text-center"> <i class="fa fa-edit" aria-hidden="true"></i> Registrar Producto</h2>
+                        <button id="closeAddRegister" class="btn btn-outline-danger"> <i class="fa fa-times"
+                                aria-hidden="true"></i></button>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-md-12 mt-4">
+                            <label for="RegisterCode" class="form-label"> <i class="fa fa-barcode"
+                                    aria-hidden="true"></i> Código de barras</label>
+                            <input type="text" id="RegisterCode" class="text-center form-control  form-control-lg"
+                                placeholder="Código de barras">
+                        </div>
+                        <div class="col-md-12 mt-4">
+                            <label for="RegisterNombre" class="form-label"> <i class="fa fa-star"
+                                    aria-hidden="true"></i> Nombre del producto</label>
+                            <input type="text" id="RegisterNombre" class="form-control form-control-lg"
+                                placeholder="Nombre del producto">
+                            <small class="text-muted" id="SearchingStatus" ></small>
+                        </div>
+
+                        <div class="col-md-12 mt-4">
+                            <label for="RegisterImagen" class="form-label"> <i class="fa fa-image"
+                                    aria-hidden="true"></i> Subir imagen (opcional): </label>
+                            <input type="file" id="RegisterImagen" class="form-control" accept="image/*">
+                            <div id="Preview" class="text-center ProductImage" style="display: none;">
+                                <img src="" class="ImageProduct" alt="Imagen del producto" id="PreviewImg">
+                            </div>
+                        </div>
+                        <div class="col-md-12 mt-2">
+                            <hr>
+                        </div>
+                        <div class="col-md-12 mt-2">
+                            <button class="btn btn-primary btn-block w-100" id="registrar">
+                                Registrar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+
+    </div>
+    <script src="node_modules/jquery/dist/jquery.js"></script>
+    <script src="node_modules/datatables.net/js/dataTables.js"></script>
+    <script src="node_modules/datatables.net-bs5/js/dataTables.bootstrap5.js"></script>
+    <script src="node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="app.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,94 @@
+@font-face {
+    font-family: 'Open Sans';
+    src: url("../res/fonts/Open_Sans/static/OpenSans-Regular.ttf");
+}
+
+@font-face {
+    font-family: 'barcode';
+    src: url("../res/fonts/Libre_Barcode_128/LibreBarcode128-Regular.ttf");
+}
+
+.container {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+}
+
+#lector {
+    font-size: 24px;
+    padding: 10px;
+    width: 100%;
+}
+
+#resultado {
+    margin-top: 20px;
+    padding: 15px;
+}
+
+body {
+    background-color: #f0f0f0;
+    font-family: 'Open Sans', sans-serif;
+}
+
+.barcode {
+    font-family: 'barcode';
+    font-size: 48px;
+    margin-top: 20px;
+}
+
+.ProductImage {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px;
+}
+
+.ImageProduct {
+    width: 100%;
+    border-radius: 10px;
+}
+
+.NoProductImage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    height: 100%;
+    cursor: pointer;
+    border-radius: 10px;
+    transition: all .4s;
+}
+
+.NoProductImage:hover {
+    border-radius: 20px;
+    transition: all .4s;
+    background-color: rgb(216, 234, 245);
+}
+
+.flex-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.notification {
+    z-index: 9999;
+    border: 1px solid #343537;
+    border-radius: 20px;
+    padding: 15px;
+    background-color: #121313c9;
+    text-align: center;
+    color: white;
+    position: fixed;
+    right: 10%;
+    bottom: 5%;
+    transition: all 1s;
+}
+
+.notification.hide {
+    filter: blur(5px) opacity(0);
+    pointer-events: none;
+    bottom: -10%;
+}
