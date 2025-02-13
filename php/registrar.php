@@ -5,6 +5,8 @@ header('Content-Type: application/json');
 
 $nombre = $_POST['Nombre'];
 $code = $_POST['Code'];
+$Costo = $_POST['Costo'];
+$Precio = $_POST['Precio'];
 
 $imagenAtached = false;
 $imagen = null;
@@ -17,18 +19,18 @@ if (isset($_FILES['file'])) {
 
 //save the image in the server
 if ($imagenAtached) {
-    $target_dir = "../images/";
+    $target_dir = "../Images/";
     $imageFileType = strtolower(pathinfo($imagen["name"], PATHINFO_EXTENSION));
     $target_file = $target_dir . $code . '.' . $imageFileType; // the image will be named as his code, with the respective extention
-    $relativeRoute = 'images/' . $code . '.' . $imageFileType;
+    $relativeRoute = 'Images/' . $code . '.' . $imageFileType;
     move_uploaded_file($imagen["tmp_name"], $target_file);
     $imagen = $relativeRoute;
 }
 
 // $conn->query("INSERT INTO productos (codigo_barras, nombre, descripcion, cantidad, url_image) VALUES ('$codigo', '$nombre', '$descripcion', $cantidad, '$imagen')");
 //usar prepare statement
-$stmt = $conn->prepare("INSERT INTO productos (codigo_barras, nombre, cantidad, url_image) VALUES (?, ?, 1, ?)");
-$stmt->bind_param("sss", $code, $nombre, $imagen);
+$stmt = $conn->prepare("INSERT INTO productos (codigo_barras, nombre, cantidad, url_image,costo, precio ) VALUES (?, ?, 1, ?,?,?)");
+$stmt->bind_param("sss", $code, $nombre, $imagen, $Costo, $Precio);
 $stmt->execute();
 $last_id = $conn->insert_id;
 

@@ -6,22 +6,23 @@ header('Content-Type: application/json');
 $data = json_decode(file_get_contents('php://input'), true);
 $codigo = $_POST["codigo"];
 
-$stmt = $conn->prepare("SELECT * FROM productos WHERE codigo_barras = ? ");
-$stmt->bind_param("s", $codigo);
-$stmt->execute();
-$producto = $stmt->get_result();
 
-if ($producto->num_rows === 0) {
+$stmt = $conn->prepare("SELECT * FROM productos WHERE (codigo_barras = '$codigo' OR nombre LIKE '%$codigo%') ORDER BY nombre asc");
+$stmt->execute();
+//get all products
+$productos = $stmt->get_result();
+
+
+if ($productos->num_rows === 0) {
     echo json_encode([
-        'NotFound' => true,
+        'Found' => false,
         'response' => 'No encontramos este producto, por favor registralo'
     ]);
     exit;
 }
-
-$producto = $producto->fetch_assoc();
-
+//get all products in array
+$producto = $productos->fetch_all(MYSQLI_ASSOC);
 echo json_encode([
-    'NotFound' => false,
+    'Found' => true,
     'response' => $producto
 ]);

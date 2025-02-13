@@ -14,10 +14,17 @@
 
 <body>
     <div id="Alerta" class="notification hide"> Esto es una alerta</div>
-    <div class="container">
 
-        <div id="MainFrame">
+    <div class="container d-flex justify-content-around mt-4">
+        <input type="radio" class="btn-check" name="options" id="InventarioRadio" autocomplete="off" checked>
+        <label class="btn btn-outline-dark" for="InventarioRadio">Inventario</label>
 
+        <input type="radio" class="btn-check" name="options" id="PVRadio" autocomplete="off">
+        <label class="btn btn-outline-dark" for="PVRadio">Punto de Venta</label>
+    </div>
+
+    <div id="InventarioContainer" class="container MainView">
+        <div id="MainFrame" class="main_frame">
             <div id="Inventario" class="Frame">
                 <h1 class="text-center"> <i class="fa-solid fa-boxes-stacked"></i> Inventario</h1>
                 <input type="text" id="lector" class="form-control text-center"
@@ -34,7 +41,8 @@
                     <div class="col-md-12 mt-2">
                         <div class="d-flex justify-content-between align-items-center">
                             <h2 class="text-center" id="ProductName">Item</h2>
-                            <button class="btn btn-danger" id="BackToInit"> <i class="fa fa-times" aria-hidden="true"></i> </button>
+                            <button class="btn btn-danger" id="BackToInit"> <i class="fa fa-times"
+                                    aria-hidden="true"></i> </button>
                         </div>
                     </div>
                     <div class="col-md-12 mt-2">
@@ -44,17 +52,26 @@
                         <div class="d-flex justify-content-center flex-wrap flex-row align-items-center gap-4">
                             <div class="form-group text-center">
                                 <label for="ProductCode">Código de barras</label>
-                                <input type="text" id="ProductCode" class="form-control text-center" readonly>
+                                <input type="text" id="ProductCode" class="form-control text-center" readonly disabled>
+                                <span id="ProductCodeLBL" class="barcode"> </span>
                             </div>
                             <div class="form-group text-center">
                                 <label for="TXTPName">Nombre del producto</label>
                                 <textarea type="text" rows="4" cols="30" id="TXTPName" class="form-control text-center"
-                                    readonly></textarea>
+                                    readonly disabled></textarea>
 
                             </div>
                             <div class="form-group text-center">
                                 <label for="TXTPDate">Ultima modificacion</label>
-                                <input type="text" id="TXTPDate" class="form-control text-center" readonly>
+                                <input type="text" id="TXTPDate" class="form-control text-center" readonly disabled>
+                            </div>
+                            <div class="form-group text-center">
+                                <label for="TXTUptCosto">Costo:</label>
+                                <input type="number" id="TXTUptCosto" class="form-control text-center">
+                            </div>
+                            <div class="form-group text-center">
+                                <label for="TXTUptPrecio">Precio: </label>
+                                <input type="number" id="TXTUptPrecio" class="form-control text-center">
                             </div>
                         </div>
                     </div>
@@ -108,7 +125,20 @@
                                     aria-hidden="true"></i> Nombre del producto</label>
                             <input type="text" id="RegisterNombre" class="form-control form-control-lg"
                                 placeholder="Nombre del producto">
-                            <small class="text-muted" id="SearchingStatus" ></small>
+                            <small class="text-muted" id="SearchingStatus"></small>
+                        </div>
+
+                        <div class="col-md-6 mt-4">
+                            <label for="TXTCosto" class="form-label"> <i class="fa fa-dollar" aria-hidden="true"></i>
+                                Costo de producción: </label>
+                            <input type="number" id="TXTCosto" class="form-control form-control-lg"
+                                placeholder="Costo de producción">
+                        </div>
+                        <div class="col-md-6 mt-4">
+                            <label for="TXTPrecio" class="form-label"> <i class="fa fa-dollar" aria-hidden="true"></i>
+                                Precio: </label>
+                            <input type="number" id="TXTPrecio" class="form-control form-control-lg"
+                                placeholder="Precio de Venta">
                         </div>
 
                         <div class="col-md-12 mt-4">
@@ -131,9 +161,99 @@
             </div>
 
         </div>
-
-
     </div>
+
+
+    <div id="PuntoDeVentaContainer" style="display: none;" class=" MainView">
+        <div class="main_frame">
+            <!-- Barra de búsqueda superior -->
+            <div class="row mb-3">
+                <div class="col-12">
+                    <div class="position-relative">
+                        <input type="text" id="codigoVenta" class="form-control form-control-lg"
+                            placeholder="Escanee o busca el producto" autofocus>
+                        <div id="sugerenciasProductos" class="sugerencias-container" style="display: none;">
+                            <!-- Las sugerencias se agregarán dinámicamente aquí -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contenedor principal dividido en dos -->
+            <div class="row">
+                <!-- Lista de productos (Izquierda) -->
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">Productos en venta</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table" id="tablaVenta">
+                                    <thead>
+                                        <tr>
+                                            <th>Imagen</th>
+                                            <th>Producto</th>
+                                            <th>Cantidad</th>
+                                            <th>Precio</th>
+                                            <th>Subtotal</th>
+                                            <th>Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="listaProductos">
+                                        <!-- Aquí se agregarán los productos dinámicamente -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Panel de control (Derecha) -->
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <!-- Imagen del producto -->
+                            <div class="text-center mb-3">
+                                <img id="imagenProductoVenta" src="resorces/placeholder_emptyCar.png"
+                                    class="img-fluid rounded" style="max-height: 200px; display: none;">
+                                <span class="text-center fw-bold" id="nombreProductoVenta"></span>
+                            </div>
+
+                            <!-- Información de totales -->
+                            <div class="mb-3">
+                                <h3>Total: <span id="totalVenta" class="float-end">$0.00</span></h3>
+                                <div class="form-group mt-3">
+                                    <label for="dineroRecibido"> <i class="fa fa-dollar" aria-hidden="true"></i> Dinero
+                                        recibido</label>
+                                    <input type="number" class="form-control" id="dineroRecibido">
+                                </div>
+                                <div class="mt-2">
+                                    <h4>Cambio: <span id="cambioVenta" class="float-end">$0.00</span></h4>
+                                </div>
+                            </div>
+
+                            <!-- Botones de acción -->
+                            <div class="d-flex flex-wrap justify-content-between gap-2">
+                                <button class="btn btn-outline-dark btn-lg" id="btnCancelarVenta">
+                                    <i class="fas fa-times"></i> Cancelar venta
+                                </button>
+                                <button class="btn btn-primary btn-lg" id="btnTerminarVenta">
+                                    <i class="fas fa-check"></i> Terminar venta
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="ContainerHist" class="container" style="margin-top: 50vh;">
+                <div id="historialContainer"></div>
+            </div>
+        </div>
+    </div>
+
+
     <script src="node_modules/jquery/dist/jquery.js"></script>
     <script src="node_modules/datatables.net/js/dataTables.js"></script>
     <script src="node_modules/datatables.net-bs5/js/dataTables.bootstrap5.js"></script>
