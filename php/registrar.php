@@ -17,8 +17,8 @@ if (isset($_FILES['file'])) {
     $imagen = $_POST['imagen'];
 }
 
-//if the name of imagen contains localhost, then erase it
-if (strpos($imagen, 'localhost') !== false) {
+//if the name of imagen contains InventarioExpress, then erase it
+if (strpos($imagen, 'InventarioExpress') !== false) {
     $imagen = "";
 }
 
