@@ -13,11 +13,11 @@ $stmt->execute();
 if ($stmt->affected_rows > 0) {
     echo json_encode([
         'status' => 'ok',
-        'response' => 'Precio actualizado correctamente'
+        'response' => 'Nombre actualizado correctamente'
     ]);
 } else {
     echo json_encode([
         'status' => 'error',
-        'response' => 'No se pudo actualizar el precio'
+        'response' => 'No se pudo actualizar el Nombre'
     ]);
 }
