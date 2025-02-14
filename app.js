@@ -234,6 +234,7 @@ async function UpdateName(newName) {
     Content.append("newName", newName)
     let response = await fetch('php/updateName.php', { method: 'POST', body: Content });
     let result = await response.text();
+    console.log(result)
     Notificacion(JSON.parse(result).response)
 }
 
