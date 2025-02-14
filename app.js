@@ -74,6 +74,7 @@ document.getElementById("PVRadio").addEventListener("click", () => {
 })
 
 
+document.getElementById("TXTPName").addEventListener("change", () => { UpdateName(document.getElementById("TXTPName").value) })
 document.getElementById("TXTUptCosto").addEventListener("change", () => { UpdateCosto(document.getElementById("TXTUptCosto").value) })
 document.getElementById("TXTUptPrecio").addEventListener("change", () => { UpdatePrecio(document.getElementById("TXTUptPrecio").value) })
 
@@ -223,6 +224,15 @@ async function UpdatePrecio(newCost) {
     Content.append("code", controller.lastItem)
     Content.append("newCost", newCost)
     let response = await fetch('php/updatePrecio.php', { method: 'POST', body: Content });
+    let result = await response.text();
+    Notificacion(JSON.parse(result).response)
+}
+
+async function UpdateName(newName) {
+    const Content = new FormData();
+    Content.append("code", controller.lastItem)
+    Content.append("newName", newName)
+    let response = await fetch('php/updateName.php', { method: 'POST', body: Content });
     let result = await response.text();
     Notificacion(JSON.parse(result).response)
 }
