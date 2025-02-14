@@ -15,12 +15,12 @@ if (isset($_FILES['file'])) {
     $imagenAtached = true;
 } else {
     $imagen = $_POST['imagen'];
+    //if the name of imagen contains InventarioExpress, then erase it
+    if (strpos($imagen, 'InventarioExpress') !== false) {
+        $imagen = "";
+    }
 }
 
-//if the name of imagen contains InventarioExpress, then erase it
-if (strpos($imagen, 'InventarioExpress') !== false) {
-    $imagen = "";
-}
 
 
 //save the image in the server
