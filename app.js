@@ -471,7 +471,6 @@ async function buscarProductos(busqueda) {
         return;
     }
     mostrarSugerencias(productos.response);
-    console.log(SugestList)
 }
 
 function mostrarSugerencias(productos) {
@@ -661,7 +660,6 @@ function renderHistorial(ventas) {
         const modal = document.createElement('div');
         modal.className = 'modal fade';
         modal.id = `detalleVenta${venta.id}`;
-        console.log(venta.productos)
         modal.innerHTML = `
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
