@@ -1,8 +1,12 @@
 <?php
+require_once '../vendor/autoload.php';
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+$dotenv->load();
+
 $servername = "localhost";
-$username = "root";
-$password = "909189";
-$dbname = "inventarioExpress";
+$username = $_ENV["DB_USERNAME"];
+$password = $_ENV["DB_PASSWORD"];
+$dbname = $_ENV["DB_NAME"];
 
 $conn = new mysqli($servername, $username, $password, $dbname);
 
