@@ -5,6 +5,9 @@ document.getElementById('lector').addEventListener('keypress', function (e) {
         procesarCodigo(codigo);
     }
 });
+document.getElementById("BTNBuscar").addEventListener('click', function () {
+    procesarCodigo(document.getElementById("lector").value, true)
+})
 document.getElementById('lector').addEventListener("focusin", () => { controller.activated = false; })
 document.getElementById('lector').addEventListener("focusout", () => {
     //wait 1 second to activate the controller again to avoid the enter keypress event to be triggered again
@@ -30,6 +33,9 @@ document.getElementById("RegisterImagen").addEventListener("change", (e) => {
     document.getElementById("Preview").style.display = "";
     const [file] = document.getElementById("RegisterImagen").files
     if (file) {
+        // Mostrar solo el preview local
+        document.getElementById('PreviewImg').style.display = '';
+        document.getElementById('imageCarousel').style.display = 'none';
         PreviewImg.src = URL.createObjectURL(file)
     }
 })
@@ -39,6 +45,7 @@ document.getElementById("BackToInit").addEventListener("click", () => {
     showMenu("Inventario")
     getInventary();
 });
+
 
 //if the user touch the div Divregistro, (if is in movile, use touch, in both cases really), the controller will be not activated, else, yes
 // document.addEventListener('click', function (e) {
@@ -59,6 +66,64 @@ document.getElementById("closeAddRegister").addEventListener("click", () => {
 })
 document.getElementById("BTNRest").addEventListener("click", () => { ChangeQuantity("REST") })
 document.getElementById("BTNAdd").addEventListener("click", () => { ChangeQuantity("ADD") })
+
+document.getElementById("LBLCantidad").addEventListener("focus", () => {
+    window.getSelection().selectAllChildren(document.getElementById("LBLCantidad"));
+})
+document.getElementById("LBLCantidad").addEventListener("input", () => {
+    if (document.getElementById("LBLCantidad").innerText == "") {
+        document.getElementById("LBLCantidad").innerText = "0";
+    }
+    ChangeQuantity("ADD", document.getElementById("LBLCantidad").innerText)
+})
+
+let ScannerActive = false;
+document.getElementById("BTNBarcode").addEventListener("click", () => {
+    if (ScannerActive) {
+        Quagga.stop();
+        document.getElementById("CameraScanner").style.display = "none";
+        document.getElementById("BTNBarcode").innerHTML = '<i class="fa-solid fa-barcode"></i> ';
+        ScannerActive = false;
+        return;
+    } else {
+        document.getElementById("CameraScanner").style.display = "block";
+        document.getElementById("BTNBarcode").innerHTML = '<i class="fa-solid fa-stop"></i> ';
+        ScannerActive = true;
+    }
+    Quagga.init(
+        {
+            inputStream: {
+                name: "Live",
+                type: "LiveStream",
+                target: document.querySelector("#CameraScanner")
+            },
+            decoder: {
+                readers: ["ean_reader"]
+            }
+        },
+        function (err) {
+            if (err) {
+                console.log(err);
+                return;
+            }
+            console.log("Initialization finished. Ready to start");
+            Quagga.start();
+        }
+    );
+
+    Quagga.onDetected(function (result) {
+        var code = result.codeResult.code;
+        console.log(code);
+        document.getElementById("resultado").innerHTML = result.codeResult.code;
+        procesarCodigo(code, true);
+        Quagga.stop();
+        document.getElementById("CameraScanner").style.display = "none";
+        document.getElementById("BTNBarcode").innerHTML = '<i class="fa-solid fa-barcode"></i> ';
+        ScannerActive = false;
+
+    });
+
+})
 
 document.getElementById("InventarioRadio").addEventListener("click", () => {
     $(".MainView").hide();
@@ -136,10 +201,57 @@ async function procesarCodigo(codigo = "", SearchWithApi = false) {
         if (!SearchWithApi) return;
         document.getElementById("SearchingStatus").innerHTML = '<i class="fa-solid fa-spinner fa-spin-pulse"></i>' + " Buscando producto en la base de datos..."
         let name = await SearchBarcode(codigo)
-        if (name.product.title != undefined) {
-            document.getElementById("RegisterNombre").value = name.product.title
+        if (name.status == "unable") {
+            procesarCodigo(codigo, true);
+            return;
+        }
+        if (name.product.title != undefined && name.product.images && name.product.images.length > 0) {
+            document.getElementById("RegisterNombre").value = name.product.title;
             document.getElementById("Preview").style.display = "";
-            document.getElementById("PreviewImg").src = name.product.images[0]
+            // Mostrar el carrusel y poblarlo
+            const carouselInner = document.getElementById('carouselInner');
+            const imageCarousel = document.getElementById('imageCarousel');
+            carouselInner.innerHTML = '';
+            name.product.images.forEach((imageUrl, index) => {
+                const carouselItem = document.createElement('div');
+                carouselItem.classList.add('carousel-item');
+                if (index === 0) carouselItem.classList.add('active');
+                const img = document.createElement('img');
+                img.classList.add('d-block', 'w-100');
+                img.src = imageUrl;
+                img.alt = 'Imagen ' + (index + 1);
+                carouselItem.appendChild(img);
+                carouselInner.appendChild(carouselItem);
+            });
+            imageCarousel.style.display = '';
+            // Inicializar/reinicializar el carrusel de Bootstrap sin auto-slide
+            let carouselInstance;
+            if (window.bootstrap && window.bootstrap.Carousel) {
+                try {
+                    carouselInstance = bootstrap.Carousel.getInstance(imageCarousel);
+                    if (carouselInstance) {
+                        carouselInstance.dispose();
+                    }
+                    carouselInstance = new bootstrap.Carousel(imageCarousel, { interval: false, ride: false });
+                } catch (e) { }
+            }
+            // Asignar la imagen activa a PreviewImg al iniciar
+            setTimeout(() => {
+                const activeImg = carouselInner.querySelector('.carousel-item.active img');
+                if (activeImg) {
+                    document.getElementById('PreviewImg').src = activeImg.src;
+                }
+            }, 100);
+            // Actualizar PreviewImg cada vez que cambie la diapositiva
+            imageCarousel.addEventListener('slid.bs.carousel', function () {
+                const activeImg = carouselInner.querySelector('.carousel-item.active img');
+                if (activeImg) {
+                    document.getElementById('PreviewImg').src = activeImg.src;
+                }
+            });
+        } else {
+            // Si no hay imágenes de la API, ocultar el carrusel
+            document.getElementById('imageCarousel').style.display = 'none';
         }
         document.getElementById("SearchingStatus").innerHTML = ''
     } else {
@@ -186,8 +298,13 @@ function resetRegistro() {
     document.getElementById("RegisterCode").value = "";
     document.getElementById("RegisterNombre").value = "";
     document.getElementById("RegisterImagen").value = "";
-    document.getElementById("Preview").style.display = "none"
-    document.getElementById("PreviewImg").src = "";
+    document.getElementById("Preview").style.display = "none";
+    // Limpiar carrusel y preview
+    const carouselInner = document.getElementById('carouselInner');
+    if (carouselInner) carouselInner.innerHTML = '';
+    document.getElementById('imageCarousel').style.display = 'none';
+    document.getElementById('PreviewImg').src = '';
+    document.getElementById('PreviewImg').style.display = 'none';
     showMenu("Inventario");
 }
 
@@ -370,10 +487,13 @@ function Notificacion(Content, time = 3) {
         , time * 1000);
 }
 
-async function ChangeQuantity(AddOrRest) {
+async function ChangeQuantity(AddOrRest, set = 0) {
     let Content = new FormData();
     Content.append("code", controller.lastItem)
     Content.append("AddOrRest", AddOrRest)
+    if (set != 0) {
+        Content.append("set", set)
+    }
     let Consult = await fetch("php/ChangeQuantity.php", { method: "POST", body: Content })
     let data = await Consult.text();
     data = JSON.parse(data);

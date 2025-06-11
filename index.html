@@ -2,7 +2,6 @@
 <html lang="es">
 
 <head>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sistema de Inventario</title>
@@ -27,8 +26,16 @@
         <div id="MainFrame" class="main_frame">
             <div id="Inventario" class="Frame">
                 <h1 class="text-center"> <i class="fa-solid fa-boxes-stacked"></i> Inventario</h1>
-                <input type="text" id="lector" class="form-control text-center"
-                    placeholder=" Escanee un código de barras " autofocus>
+                <div class="input-group mb-3">
+                    <input type="text" id="lector" class="form-control text-center"
+                        placeholder=" Escanee un código de barras " autofocus>
+                    <button class="btn btn-outline-secondary fs-3" type="button" id="BTNBarcode"> <i
+                            class="fa fa-barcode" aria-hidden="true"></i></button>
+                    <button class="btn btn-outline-secondary" type="button" id="BTNBuscar">Buscar</button>
+                </div>
+                <div id="CameraScanner" style="display: none; width: 100%; height: 500px;">
+
+                </div>
                 <div id="resultado"></div>
 
                 <div id="TableContainer">
@@ -48,33 +55,7 @@
                     <div class="col-md-12 mt-2">
                         <hr>
                     </div>
-                    <div class="col-md-6 mt-2">
-                        <div class="d-flex justify-content-center flex-wrap flex-row align-items-center gap-4">
-                            <div class="form-group text-center">
-                                <label for="ProductCode">Código de barras</label>
-                                <input type="text" id="ProductCode" class="form-control text-center" readonly disabled>
-                                <span id="ProductCodeLBL" class="barcode"> </span>
-                            </div>
-                            <div class="form-group text-center">
-                                <label for="TXTPName">Nombre del producto</label>
-                                <textarea type="text" rows="4" cols="30" id="TXTPName" class="form-control text-center"
-                                    ></textarea>
 
-                            </div>
-                            <div class="form-group text-center">
-                                <label for="TXTPDate">Ultima modificacion</label>
-                                <input type="text" id="TXTPDate" class="form-control text-center" readonly disabled>
-                            </div>
-                            <div class="form-group text-center">
-                                <label for="TXTUptCosto">Costo:</label>
-                                <input type="number" id="TXTUptCosto" class="form-control text-center">
-                            </div>
-                            <div class="form-group text-center">
-                                <label for="TXTUptPrecio">Precio: </label>
-                                <input type="number" id="TXTUptPrecio" class="form-control text-center">
-                            </div>
-                        </div>
-                    </div>
                     <div class="col-md-6 mt-2">
                         <div id="NoImage" style="display: none;">
                             <div class="NoProductImage">
@@ -87,13 +68,40 @@
                                 src="https://m.media-amazon.com/images/I/71M-896ln9L.jpg" alt="ProductImagen">
                         </div>
                     </div>
+                    <div class="col-md-6 mt-2">
+                        <div class="d-flex justify-content-center flex-wrap flex-row align-items-center gap-4">
+                            <div class="form-group text-center">
+                                <label for="ProductCode">Código de barras</label>
+                                <input type="text" id="ProductCode" class="form-control text-center" readonly disabled>
+                                <span id="ProductCodeLBL" class="barcode"> </span>
+                            </div>
+                            <div class="form-group text-center">
+                                <label for="TXTPName">Nombre del producto</label>
+                                <textarea type="text" rows="4" cols="30" id="TXTPName"
+                                    class="form-control text-center"></textarea>
+
+                            </div>
+                            <div style="display: none;" class="form-group text-center">
+                                <label for="TXTUptCosto">Costo:</label>
+                                <input type="number" id="TXTUptCosto" class="form-control text-center">
+                            </div>
+                            <div class="form-group text-center">
+                                <label for="TXTUptPrecio">Precio: </label>
+                                <input type="number" id="TXTUptPrecio" class="form-control text-center">
+                            </div>
+                            <div class="form-group text-center">
+                                <label for="TXTPDate">Ultima modificacion</label>
+                                <input type="text" id="TXTPDate" class="form-control text-center" readonly disabled>
+                            </div>
+                        </div>
+                    </div>
 
                     <div class="col-md-12 mt-2">
                         <h4 class="text-center"> Cantidad</h4>
                         <div class="d-flex justify-content-around align-items-center">
                             <button class="btn btn-outline-secondary btn-lg" id="BTNRest"> <i class="fa fa-minus"
                                     aria-hidden="true"></i> </button>
-                            <h4 class="text-center display-2" id="LBLCantidad"> 10 </h4>
+                            <h4 class="text-center display-2" id="LBLCantidad" contenteditable="true"> 10 </h4>
                             <button class="btn btn-outline-secondary btn-lg" id="BTNAdd"><i class="fa fa-plus"
                                     aria-hidden="true"></i></button>
 
@@ -114,49 +122,74 @@
                     </div>
                     <hr>
                     <div class="row">
-                        <div class="col-md-12 mt-4">
-                            <label for="RegisterCode" class="form-label"> <i class="fa fa-barcode"
-                                    aria-hidden="true"></i> Código de barras</label>
-                            <input type="text" id="RegisterCode" class="text-center form-control  form-control-lg"
-                                placeholder="Código de barras">
+                        <div id="Preview" class="text-center ProductImage col-md-6" style="display: none;">
+                            <!-- Carrusel de imágenes para resultados de searchBarcode -->
+                            <div id="imageCarousel" class="carousel slide mb-2" data-bs-ride="carousel"
+                                style="display:none;">
+                                <div class="carousel-inner" id="carouselInner">
+                                    <!-- Las imágenes se insertan dinámicamente desde app.js -->
+                                </div>
+                                <button class="carousel-control-prev" type="button" data-bs-target="#imageCarousel"
+                                    data-bs-slide="prev">
+                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Anterior</span>
+                                </button>
+                                <button class="carousel-control-next" type="button" data-bs-target="#imageCarousel"
+                                    data-bs-slide="next">
+                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Siguiente</span>
+                                </button>
+                            </div>
+                            <!-- PreviewImg para preview local de archivo -->
+                            <img src="" class="ImageProduct" alt="Imagen del producto" id="PreviewImg"
+                                style="display:none;">
                         </div>
-                        <div class="col-md-12 mt-4">
-                            <label for="RegisterNombre" class="form-label"> <i class="fa fa-star"
-                                    aria-hidden="true"></i> Nombre del producto</label>
-                            <input type="text" id="RegisterNombre" class="form-control form-control-lg"
-                                placeholder="Nombre del producto">
-                            <small class="text-muted" id="SearchingStatus"></small>
-                        </div>
+                        <div class="row col-md-6">
+                            <div class="col-md-12 mt-4">
+                                <label for="RegisterCode" class="form-label"> <i class="fa fa-barcode"
+                                        aria-hidden="true"></i> Código de barras</label>
+                                <input type="text" id="RegisterCode" class="text-center form-control  form-control-lg"
+                                    placeholder="Código de barras">
+                            </div>
+                            <div class="col-md-12 mt-4">
+                                <label for="RegisterNombre" class="form-label"> <i class="fa fa-star"
+                                        aria-hidden="true"></i> Nombre del producto</label>
+                                <input type="text" id="RegisterNombre" class="form-control form-control-lg"
+                                    placeholder="Nombre del producto">
+                                <small class="text-muted" id="SearchingStatus"></small>
+                            </div>
 
-                        <div class="col-md-6 mt-4">
-                            <label for="TXTCosto" class="form-label"> <i class="fa fa-dollar" aria-hidden="true"></i>
-                                Costo de producción: </label>
-                            <input type="number" id="TXTCosto" class="form-control form-control-lg"
-                                placeholder="Costo de producción">
-                        </div>
-                        <div class="col-md-6 mt-4">
-                            <label for="TXTPrecio" class="form-label"> <i class="fa fa-dollar" aria-hidden="true"></i>
-                                Precio: </label>
-                            <input type="number" id="TXTPrecio" class="form-control form-control-lg"
-                                placeholder="Precio de Venta">
-                        </div>
+                            <div style="display: none;" class="col-md-6 mt-4">
+                                <label for="TXTCosto" class="form-label"> <i class="fa fa-dollar"
+                                        aria-hidden="true"></i>
+                                    Costo de producción: </label>
+                                <input type="number" id="TXTCosto" class="form-control form-control-lg"
+                                    placeholder="Costo de producción">
+                            </div>
+                            <div class="col-md-12 mt-4">
+                                <label for="TXTPrecio" class="form-label"> <i class="fa fa-dollar"
+                                        aria-hidden="true"></i>
+                                    Precio: </label>
+                                <input type="number" id="TXTPrecio" class="form-control form-control-lg"
+                                    placeholder="Precio">
+                            </div>
 
-                        <div class="col-md-12 mt-4">
-                            <label for="RegisterImagen" class="form-label"> <i class="fa fa-image"
-                                    aria-hidden="true"></i> Subir imagen (opcional): </label>
-                            <input type="file" id="RegisterImagen" class="form-control" accept="image/*">
-                            <div id="Preview" class="text-center ProductImage" style="display: none;">
-                                <img src="" class="ImageProduct" alt="Imagen del producto" id="PreviewImg">
+                            <div class="col-md-12 mt-4">
+                                <label for="RegisterImagen" class="form-label"> <i class="fa fa-image"
+                                        aria-hidden="true"></i> Subir imagen (opcional): </label>
+                                <input type="file" id="RegisterImagen" class="form-control" accept="image/*">
+
+                            </div>
+                            <div class="col-md-12 mt-2">
+                                <hr>
+                            </div>
+                            <div class="col-md-12 mt-2">
+                                <button class="btn btn-primary btn-block w-100" id="registrar">
+                                    Registrar</button>
                             </div>
                         </div>
-                        <div class="col-md-12 mt-2">
-                            <hr>
-                        </div>
-                        <div class="col-md-12 mt-2">
-                            <button class="btn btn-primary btn-block w-100" id="registrar">
-                                Registrar</button>
-                        </div>
                     </div>
+
                 </div>
             </div>
 
@@ -258,6 +291,7 @@
     <script src="node_modules/datatables.net/js/dataTables.js"></script>
     <script src="node_modules/datatables.net-bs5/js/dataTables.bootstrap5.js"></script>
     <script src="node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@ericblade/quagga2/dist/quagga.min.js"></script>
     <script src="app.js"></script>
 </body>
 

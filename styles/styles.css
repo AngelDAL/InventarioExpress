@@ -18,7 +18,6 @@
 #lector {
     font-size: 24px;
     padding: 10px;
-    width: 100%;
 }
 
 #resultado {
@@ -41,11 +40,14 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 20px;
+    padding: 20px;
+    min-width: 100px;
+    min-height: 100px;
 }
 
 .ImageProduct {
     width: 100%;
+    min-width: 100px;
     border-radius: 10px;
 }
 
@@ -136,7 +138,7 @@ body {
     background: white;
     border: 1px solid #dee2e6;
     border-radius: 0.25rem;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     z-index: 1000;
     max-height: 300px;
     overflow-y: auto;
