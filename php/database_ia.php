@@ -141,7 +141,7 @@ class DatabaseIA
         $history = $this->getHistoryPrompt();
         $prompt = $history .
             "Solicitud original del usuario: \"$request\"\n\nResultado SQL: " . json_encode($result, JSON_PRETTY_PRINT) .
-            "\n\nRedacta una respuesta clara y concisa para el usuario basada en el resultado proporcionado. Responde solo con la interpretación en español, sin incluir ningún texto técnico ni SQL.";
+            "\n\n Interpreta los datos y muestralos en español, bien estructurados y deacuerdo a lo que el usuario solicito.";
 
         $data = [
             "contents" => [
