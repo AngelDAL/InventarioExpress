@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="node_modules/@fortawesome/fontawesome-free/css/all.min.css">
     <link rel="stylesheet" href="node_modules/datatables.net-bs5/css/dataTables.bootstrap5.css">
     <link rel="stylesheet" href="styles/styles.css">
+    <link rel="stylesheet" href="styles/IAChat.css">
 </head>
 
 <body>
@@ -20,6 +21,34 @@
 
         <input type="radio" class="btn-check" name="options" id="PVRadio" autocomplete="off">
         <label class="btn btn-outline-dark" for="PVRadio">Punto de Venta</label>
+
+        <input type="radio" class="btn-check" name="options" id="AsistenteRadio" autocomplete="off">
+        <label class="btn btn-outline-dark" for="AsistenteRadio">Asistente</label>
+    </div>
+
+    <div id="IAChatContainer" class="container MainView" style="display: none;">
+        <div class="container my-4" id="IAChatContainer">
+            <div class="card shadow" style="max-width: 600px; margin: 0 auto; position: relative;">
+                <div class="card-header bg-primary text-white d-flex align-items-center">
+                    <i class="fa-solid fa-robot me-2"></i> Chat con la IA
+                </div>
+                <div class="card-body" style="height: 650px; overflow-y: auto; background: #f8f9fa;"
+                    id="ia-chat-history">
+                    <!-- Mensajes del chat se insertan aquí -->
+                </div>
+                <div style="display: flex; justify-content: space-around; align-items: center;"
+                    class="card-footer bg-white position-relative">
+                    <button id="btn-nuevo-chat" type="button" class="btn btn-outline-secondary btn-sm">
+                        <i class="fa fa-broom"></i> Nuevo chat
+                    </button>
+                    <form id="ia-chat-form" class="d-flex gap-2">
+                        <input type="text" id="ia-chat-input" class="form-control" placeholder="Escribe tu mensaje..."
+                            autocomplete="off">
+                        <button type="submit" class="btn btn-primary"><i class="fa fa-paper-plane"></i></button>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div id="InventarioContainer" class="container MainView">
@@ -286,6 +315,9 @@
         </div>
     </div>
 
+    <!-- Chat con la IA -->
+
+
 
     <script src="node_modules/jquery/dist/jquery.js"></script>
     <script src="node_modules/datatables.net/js/dataTables.js"></script>
@@ -293,6 +325,7 @@
     <script src="node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@ericblade/quagga2/dist/quagga.min.js"></script>
     <script src="app.js"></script>
+    <script src="js/askIA.js"></script>
 </body>
 
 </html>

@@ -1,0 +1,89 @@
+#IAChatContainer .ia-message {
+    margin-bottom: 10px;
+    display: flex;
+    align-items: flex-end;
+}
+
+#IAChatContainer .ia-message.user .msg-bubble {
+    background: #e9ecef;
+    color: #212529;
+    margin-left: auto;
+    border-bottom-right-radius: 0;
+}
+
+#IAChatContainer .ia-message.ia .msg-bubble {
+    background: #0d6efd;
+    color: #fff;
+    margin-right: auto;
+    border-bottom-left-radius: 0;
+}
+
+#IAChatContainer .msg-bubble {
+    padding: 10px 16px;
+    border-radius: 18px;
+    max-width: 75%;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+    font-size: 1rem;
+    word-break: break-word;
+}
+
+#IAChatContainer .ia-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #0d6efd;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 8px;
+    font-size: 1.2rem;
+}
+
+#IAChatContainer .user-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #adb5bd;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 8px;
+    font-size: 1.2rem;
+}
+
+#IAChatContainer .typing-indicator {
+    display: flex;
+    align-items: center;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+#IAChatContainer .typing-dot {
+    height: 8px;
+    width: 8px;
+    margin: 0 2px;
+    background: #adb5bd;
+    border-radius: 50%;
+    display: inline-block;
+    animation: blink 1.4s infinite both;
+}
+
+#IAChatContainer .typing-dot:nth-child(2) {
+    animation-delay: .2s;
+}
+
+#IAChatContainer .typing-dot:nth-child(3) {
+    animation-delay: .4s;
+}
+
+@keyframes blink {
+    0%, 80%, 100% {
+        opacity: 0;
+    }
+
+    40% {
+        opacity: 1;
+    }
+}

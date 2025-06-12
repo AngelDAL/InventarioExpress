@@ -138,6 +138,12 @@ document.getElementById("PVRadio").addEventListener("click", () => {
     historialVentas();
 })
 
+document.getElementById("AsistenteRadio").addEventListener("click", () => {
+    $(".MainView").hide();
+    $("#IAChatContainer").show();
+    controller.activated = false;
+})
+
 
 document.getElementById("TXTPName").addEventListener("change", () => { UpdateName(document.getElementById("TXTPName").value) })
 document.getElementById("TXTUptCosto").addEventListener("change", () => { UpdateCosto(document.getElementById("TXTUptCosto").value) })
@@ -326,6 +332,10 @@ function renderProduct(data) {
         document.getElementById("ImagePreviewProduct").src = data.url_image
     }
 }
+document.getElementById("ImagePreviewProduct").addEventListener("click", () => {
+
+})
+
 
 async function UpdateCosto(newCost) {
     const Content = new FormData();
