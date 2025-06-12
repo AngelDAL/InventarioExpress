@@ -205,14 +205,14 @@ class DatabaseIA
             'total',
             'registros'
         ];
-        $isDBQuery = false;
-        $lowerRequest = mb_strtolower($request, 'UTF-8');
-        foreach ($keywords as $kw) {
-            if (strpos($lowerRequest, $kw) !== false) {
-                $isDBQuery = true;
-                break;
-            }
-        }
+        $isDBQuery = true;
+        // $lowerRequest = mb_strtolower($request, 'UTF-8');
+        // foreach ($keywords as $kw) {
+        //     if (strpos($lowerRequest, $kw) !== false) {
+        //         $isDBQuery = true;
+        //         break;
+        //     }
+        // }
 
         if ($isDBQuery) {
             $structure = $this->getDatabaseStructure();
