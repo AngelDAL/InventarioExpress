@@ -95,14 +95,22 @@ class DatabaseIA
         curl_close($ch);
 
         $result = json_decode($response, true);
+        $logFile = __DIR__ . '/../log.txt';
+        if (!file_exists($logFile)) {
+            file_put_contents($logFile, "LOG DE CONSULTAS IA\n");
+        }
         if (isset($result['candidates'][0]['content']["parts"][0]['text'])) {
             $sql = trim($result['candidates'][0]['content']["parts"][0]['text']);
             // Elimina posibles etiquetas de código o comentarios
             $sql = preg_replace('/^```sql|^```|\s*--.*$/m', '', $sql);
             $sql = trim($sql);
+            // Registrar la consulta en log.txt
+            file_put_contents($logFile, date('Y-m-d H:i:s') . " | SQL: " . $sql . PHP_EOL, FILE_APPEND);
             $this->addToHistory('ai', $sql);
             return $sql;
         }
+
+
         return null;
     }
 
@@ -125,11 +133,28 @@ class DatabaseIA
     // Ejecuta la consulta SQL y devuelve el resultado
     public function executeQuery($sql)
     {
-        $result = $this->conn->query($sql);
-        if ($result && $row = $result->fetch_assoc()) {
-            return $row;
+        $logFile = __DIR__ . '/../log.txt';
+        if (!file_exists($logFile)) {
+            file_put_contents($logFile, "LOG DE CONSULTAS IA\n");
         }
-        return null;
+        // Debug: registrar la consulta ejecutada
+        file_put_contents($logFile, date('Y-m-d H:i:s') . " | EXECUTE: " . $sql . PHP_EOL, FILE_APPEND);
+
+        $result = $this->conn->query($sql);
+        $table = [];
+        if ($result && $row = $result->fetch_assoc()) {
+            // Registrar el resultado de la consulta
+            for ($i = 0; $i < $result->num_rows; $i++) {
+                file_put_contents(
+                    $logFile,
+                    date('Y-m-d H:i:s') . " | RESULT: " . json_encode($row, JSON_UNESCAPED_UNICODE) . PHP_EOL,
+                    FILE_APPEND
+                );
+                $table[] = $row;
+                $row = $result->fetch_assoc();
+            }
+        }
+        return $table;
     }
 
     // Envía el resultado de la consulta a la IA para interpretación en lenguaje natural
